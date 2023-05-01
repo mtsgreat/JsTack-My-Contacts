@@ -158,7 +158,7 @@ export default function Home() {
             <SearchNotFoundContainer>
               <img src={magifierQuestion} alt="Maginifier Question" />
               <span>
-                Nenhum resultado foi encontrado para <strong>`{searchTerm}`</strong>
+                Nenhum resultado foi encontrado para a palavra <strong>`{searchTerm}`</strong>
               </span>
             </SearchNotFoundContainer>
           )}
