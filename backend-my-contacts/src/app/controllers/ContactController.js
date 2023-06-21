@@ -1,4 +1,5 @@
 const ContactsRepository = require('../repositories/ContactsRepository');
+const isValidUUID = require("../utils/isValidUUID")
 
 class ContactController {
   async index(request, response) {
@@ -13,6 +14,11 @@ class ContactController {
   async show(request, response) {
   // Obter um Registro
     const { id } = request.params;
+
+    if(!isValidUUID(id)){
+       return response.status(400).json({error: 'Invalid user id'})
+    }
+
     const contact = await ContactsRepository.findById(id);
 
     if (!contact) {
@@ -32,14 +38,23 @@ class ContactController {
       return response.status(400).json({ erro: 'Nome é obrigatório' });
     }
 
-    const emailExist = await ContactsRepository.findByEmail(email);
+    if( category_id && !isValidUUID(category_id)){
+      return response.status(400).json({error: 'Invalid category id'})
+   }
+
+    if(email) {
+      const emailExist = await ContactsRepository.findByEmail(email);
 
     if (emailExist) {
       return response.status(400).json({ erro: 'E-mail já cadastrado' });
+     }
     }
 
     const contact = await ContactsRepository.addContact({
-      name, email, phone, category_id,
+      name, 
+      email: email || null, 
+      phone, 
+      category_id: category_id || null
     });
     response.status(201).json(contact);
   }
@@ -47,9 +62,23 @@ class ContactController {
   async update(request, response) {
     // Atualizar um registro
     const { id } = request.params;
+
     const {
       name, email, phone, category_id,
     } = request.body;
+
+    if(!isValidUUID(id)){
+      return response.status(400).json({error: 'Invalid contact id'})
+   }
+
+   if( category_id && !isValidUUID(category_id)){
+    return response.status(400).json({error: 'Invalid contact id'})
+   }
+
+   if (!name) {
+    return response.status(404).json({ erro: 'Nome é obrigatório' });
+  }
+
 
     const contactExists = await ContactsRepository.findById(id);
 
@@ -57,18 +86,19 @@ class ContactController {
       return response.status(404).json({ error: 'Usuário não encontrado' });
     }
 
-    if (!name) {
-      return response.status(404).json({ erro: 'Nome é obrigatório' });
-    }
+    if(email){
+      const emailExist = await ContactsRepository.findByEmail(email);
+      if (emailExist && emailExist.id !== id) {
+        return response.status(400).json({ erro: 'E-mail já cadastrado' });
+      }
 
-    const emailExist = await ContactsRepository.findByEmail(email);
-
-    if (emailExist && emailExist.id !== id) {
-      return response.status(400).json({ erro: 'E-mail já cadastrado' });
     }
 
     const contact = await ContactsRepository.update(id, {
-      name, email, phone, category_id,
+      name, 
+      email: email || null, 
+      phone, 
+      category_id: category_id || null
     });
 
     response.json(contact);
@@ -78,6 +108,11 @@ class ContactController {
     // Apagar um registro
     const { id } = request.params;
     // const contact = await ContactsRepository.findById(id);
+
+    if(!isValidUUID(id)){
+      return response.status(400).json({error: 'Invalid contact id'})
+    }
+
 
     // if (!contact) {
     //   return response.status(404).json({ erro: 'Not found' });
