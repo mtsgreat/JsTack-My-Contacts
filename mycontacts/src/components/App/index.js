@@ -8,18 +8,21 @@ import Header from '../Header';
 import Routes from '../../Routes';
 // import ContactsList from '../ContactsList';
 
+import ToastContainer from '../Toast/ToastContainer';
+
 function App() {
   return (
     <BrowserRouter>
-      <React.StrictMode>
-        <ThemeProvider theme={defaultTheme}>
-          <GlovalStyles />
-          <Container>
-            <Header />
-            <Routes />
-          </Container>
-        </ThemeProvider>
-      </React.StrictMode>
+      {/* <React.StrictMode> */}
+      <ThemeProvider theme={defaultTheme}>
+        <GlovalStyles />
+        <ToastContainer />
+        <Container>
+          <Header />
+          <Routes />
+        </Container>
+      </ThemeProvider>
+      {/* </React.StrictMode> */}
     </BrowserRouter>
   );
 }

@@ -13,6 +13,9 @@ export default {
       200: '#BCBCBC',
       100: '#E5E5E5',
     },
+    sucess: {
+      main: '#51CA73',
+    },
     danger: {
       light: '#F97171',
       main: '#FC5050',
