@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import {
+  useState, useEffect, forwardRef, useImperativeHandle,
+} from 'react';
 import FormGroup from '../FormGroup';
 
 import isEmailValid from '../../utils/isEmailValid';
@@ -10,7 +12,8 @@ import Input from '../Input';
 import Select from '../Select';
 import Button from '../Button';
 
-export default function ContactForm({ buttonLabel, onSubmit }) {
+const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
+//   console.log('ref', ref);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -27,6 +30,27 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
   } = useErros();
 
   const isFormValid = (name && erros.length === 0);
+
+  useImperativeHandle(ref, () => ({
+    setFieldsValues: (contact) => {
+      setName(contact.name);
+      setEmail(contact.email);
+      setPhone(contact.phone);
+      setCategoryId(contact.category_id);
+    },
+  }), []);
+
+  //   useEffect(() => {
+  //     const refObject = ref;
+  //     refObject.current = {
+  // setFieldsValues: (contact) => {
+  //   setName(contact.name);
+  //   setEmail(contact.email);
+  //   setPhone(contact.phone);
+  //   setCategoryId(contact.category_id);
+  // },
+  //     };
+  //   }, []);
 
   useEffect(() => {
     async function loaderCategories() {
@@ -75,6 +99,10 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
     });
 
     setIsSubmiting(false);
+    setName('');
+    setEmail('');
+    setPhone('');
+    setCategoryId('');
   }
 
   return (
@@ -132,4 +160,6 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
 
     </Form>
   );
-}
+});
+
+export default ContactForm;
