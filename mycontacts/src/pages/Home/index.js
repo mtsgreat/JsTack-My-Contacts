@@ -26,6 +26,7 @@ import Loader from '../../components/Loader';
 import Button from '../../components/Button';
 import ContactsServices from '../../services/ContactsServices';
 import magifierQuestion from '../../assets/images/magnifier-question.svg';
+import Modal from '../../components/Modal';
 
 export default function Home() {
   const [contacts, setContacts] = useState([]);
@@ -33,6 +34,9 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [contactBeingDeleted, setContactBeingDeleted] = useState(null);
 
   const filteredContacts = useMemo(() => contacts.filter((contact) => (
     contact.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -90,10 +94,34 @@ export default function Home() {
     loadContacts();
   }
 
+  function handleDeleteContact(contato) {
+    setContactBeingDeleted(contato);
+    setIsDeleteModalVisible(true);
+  }
+
+  function handleCloseDeleteModal() {
+    setIsDeleteModalVisible(false);
+  }
+
+  function handleConfirmDeleteContact() {
+    console.log('handleConfirmDeleteContact', contactBeingDeleted.id);
+  }
+
   return (
     <Container>
-      {/* <Modal danger /> */}
+
       <Loader isLoading={isLoading} />
+      <Modal
+        danger
+        visible={isDeleteModalVisible}
+        title={`Tem certeza que deseja remover o contato "${contactBeingDeleted?.name}"?`}
+        confirmLabel="Deletar"
+        onCancel={handleCloseDeleteModal}
+        onConfirm={handleConfirmDeleteContact}
+      >
+
+        <p>Está ação não poderá ser desfeita!</p>
+      </Modal>
 
       {contacts.length > 0 && (
         <InputSearchContainer>
@@ -189,7 +217,7 @@ export default function Home() {
                 <Link to={`/edit/${contato.id}`} alt="Edita">
                   <img src={edit} alt="Edit" />
                 </Link>
-                <button type="button">
+                <button type="button" onClick={() => handleDeleteContact(contato)}>
                   <img src={deleteted} alt="delete" />
                 </button>
               </div>
