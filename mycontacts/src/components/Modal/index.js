@@ -6,6 +6,7 @@ import Button from '../Button';
 export default function Modal({
   danger = false,
   title,
+  isLoading = false,
   children,
   cancelLabel = 'Cancelar',
   confirmLabel = 'Confirmar',
@@ -31,6 +32,7 @@ export default function Modal({
             type="button"
             className="cancel-button"
             onClick={onCancel}
+            disabled={isLoading}
           >
             {cancelLabel}
           </button>
@@ -38,6 +40,7 @@ export default function Modal({
             type="button"
             danger={danger}
             onClick={onConfirm}
+            isLoading={isLoading}
           >
             {confirmLabel}
           </Button>
