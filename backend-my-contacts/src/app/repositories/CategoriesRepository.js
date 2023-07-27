@@ -1,5 +1,6 @@
 const db = require('../../database/index');
 
+
 class CategoryRepository {
   async findAll() {
     const rows = db.query('SELECT * FROM categories ORDER BY name');
@@ -15,6 +16,11 @@ class CategoryRepository {
     `, [name]);
 
     return row;
+  }
+
+  async delete(id) {
+    const deleteOp = await db.query('DELETE FROM categories WHERE id = $1', [id]);
+    return deleteOp;
   }
 }
 

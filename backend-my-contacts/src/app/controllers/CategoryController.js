@@ -1,4 +1,5 @@
 const CategoryRepository = require('../repositories/CategoriesRepository');
+const isValidUUID = require("../utils/isValidUUID")
 
 class CategoryController {
   async index(request, response) {
@@ -17,6 +18,19 @@ class CategoryController {
     const category = await CategoryRepository.create({ name });
 
     response.status(201).json(category);
+  }
+
+  async delete(request, response) {
+    // Apagar um registro
+    const { id } = request.params;
+    
+
+    if(!isValidUUID(id)){
+      return response.status(400).json({error: 'Invalid category id'})
+    }
+
+    await CategoryRepository.delete(id);
+    response.sendStatus(204);
   }
 }
 
