@@ -63,6 +63,7 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
     async function loaderCategories() {
       try {
         const categoriesList = await CategoriesService.listCategories();
+
         setCategories(categoriesList);
       } catch {} finally {
         setIsLoadingCategories(false);

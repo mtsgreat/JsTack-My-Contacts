@@ -179,6 +179,7 @@ export default function Home() {
         </strong>
         )}
         <Link to="/new">Novo contato</Link>
+        <Link to="/new-category">Nova Categoria</Link>
       </Header>
 
       {hasError && (
