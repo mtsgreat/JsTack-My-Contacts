@@ -1,29 +1,18 @@
-/* eslint-disable react/jsx-one-expression-per-line */
-import { Link } from 'react-router-dom';
-
 import {
   Container,
-  ListHeader,
-  Card,
-  ErrorContainer,
-  EmptyListContainer,
-  SearchNotFoundContainer,
-
 } from './styles';
 
-import arrow from '../../assets/images/icons/arrow.svg';
-import edit from '../../assets/images/icons/edit.svg';
-import deleteted from '../../assets/images/icons/delete.svg';
-import sad from '../../assets/images/sad.svg';
-import emptyBox from '../../assets/images/empty-box.svg';
 // import Modal from '../../components/Modal';
 import Loader from '../../components/Loader';
-import Button from '../../components/Button';
-import magifierQuestion from '../../assets/images/magnifier-question.svg';
 import Modal from '../../components/Modal';
 import useHome from './useHome';
+
 import InputSearch from './components/InputSearch';
 import Header from './components/Header';
+import ErrorStatus from './components/ErrorStatus';
+import EmptyList from './components/EmptyList';
+import SearchNotFound from './components/SearchNotFound';
+import ContactList from './components/ContactsList';
 
 export default function Home() {
   const {
@@ -63,73 +52,27 @@ export default function Home() {
       />
 
       {hasError && (
-        <ErrorContainer>
-          <img src={sad} alt="Sad" />
-
-          <div className="info">
-            <strong>Ocorreu um erro ao obter os seus contatos</strong>
-
-            <Button onClick={handleTryAgain} type="button">
-              Tentar novamente
-            </Button>
-          </div>
-        </ErrorContainer>
+        <ErrorStatus onTryAgain={handleTryAgain} />
       )}
 
       {!hasError && (
         <>
 
           {(contacts.length < 1 && !isLoading) && (
-          <EmptyListContainer>
-            <img src={emptyBox} alt="Sem contados" />
-            <p>
-              Você ainda não tem nenhum contato cadastrado!
-              Clique no botão <strong>”Novo contato”</strong> à cima para cadastrar o seu primeiro!
-            </p>
-          </EmptyListContainer>
+          <EmptyList />
           )}
 
           {(contacts.length > 0 && filteredContacts.length < 1) && (
-            <SearchNotFoundContainer>
-              <img src={magifierQuestion} alt="Maginifier Question" />
-              <span>
-                Nenhum resultado foi encontrado para  <strong>`{searchTerm}`</strong>
-              </span>
-            </SearchNotFoundContainer>
+            <SearchNotFound searchTerm={searchTerm} />
           )}
 
-          {filteredContacts.length > 0 && (
-          <ListHeader orderBy={orderBy}>
-            <button type="button" onClick={handleToggleOrderBy}>
-              <span>Nome</span>
-              <img src={arrow} alt="Arrow" />
-            </button>
-          </ListHeader>
-          )}
+          <ContactList
+            filteredContacts={filteredContacts}
+            orderBy={orderBy}
+            onToggleOrderBy={handleToggleOrderBy}
+            onDeleteContact={handleDeleteContact}
+          />
 
-          {filteredContacts.map((contato) => (
-            <Card key={contato.id}>
-              <div className="info">
-                <div className="contact-name">
-                  <strong>{contato.name}</strong>
-                  {contato.category.name
-                                        && (<small>{contato.category.name}</small>
-                                        )}
-                </div>
-                <span>{contato.email}</span>
-                <span>{contato.phone}</span>
-              </div>
-
-              <div className="actions">
-                <Link to={`/edit/${contato.id}`} alt="Edita">
-                  <img src={edit} alt="Edit" />
-                </Link>
-                <button type="button" onClick={() => handleDeleteContact(contato)}>
-                  <img src={deleteted} alt="delete" />
-                </button>
-              </div>
-            </Card>
-          ))}
           <Modal
             isLoading={isLoadingDelete}
             danger
@@ -139,7 +82,6 @@ export default function Home() {
             onCancel={handleCloseDeleteModal}
             onConfirm={handleConfirmDeleteContact}
           >
-
             <p>Está ação não poderá ser desfeita!</p>
           </Modal>
         </>
