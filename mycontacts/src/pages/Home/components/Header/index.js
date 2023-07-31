@@ -4,7 +4,7 @@ import { Container } from './styles';
 export default function Header({ hasError, contacts, filteredContacts }) {
   // eslint-disable-next-line no-nested-ternary
   const aligment = hasError
-    ? 'flex-end'
+    ? 'space-around'
     : (
       contacts.length > 0
         ? 'space-between'
