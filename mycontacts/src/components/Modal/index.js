@@ -1,11 +1,9 @@
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { useRef } from 'react';
 import { Overlay, Container, Footer } from './styles';
 // eslint-disable-next-line import/order
 
 import Button from '../Button';
 import ReactPortal from '../ReactPortal';
+import useAnimetedUnmount from '../../hooks/useAnimetedUnmount';
 
 export default function Modal({
   danger = false,
@@ -18,30 +16,7 @@ export default function Modal({
   onConfirm,
   visible,
 }) {
-  const [shouldRender, setShouldRender] = useState(visible);
-
-  const overlayRef = useRef(null);
-
-  useEffect(() => {
-    if (visible) {
-      setShouldRender(true);
-    }
-
-    function handleAnimationEnd() {
-      setShouldRender(false);
-    }
-
-    const overlayRefElement = overlayRef.current;
-    if (!visible && overlayRefElement) {
-      overlayRefElement.addEventListener('animationend', handleAnimationEnd);
-    }
-
-    return () => {
-      if (overlayRefElement) {
-        overlayRefElement.removeEventListener('animationend', handleAnimationEnd);
-      }
-    };
-  }, [visible]);
+  const { shouldRender, animatedElementRef } = useAnimetedUnmount(visible);
 
   if (!shouldRender) {
     return null;
@@ -60,7 +35,7 @@ export default function Modal({
 
   return (
     <ReactPortal containerId="modal-root">
-      <Overlay isLeaving={!visible} ref={overlayRef}>
+      <Overlay isLeaving={!visible} ref={animatedElementRef}>
         <Container danger={danger} isLeaving={!visible}>
           <h1>{title}</h1>
 
