@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
+import { useRef } from 'react';
 import { Container } from './styles';
 
 import xCircleIcon from '../../../assets/images/icons/x-circle.svg';
 import checkCicleIcon from '../../../assets/images/icons/check-circle.svg';
-
-import useAnimetedUnmount from '../../../hooks/useAnimetedUnmount';
 
 export default function ToastMessage({
   id,
@@ -13,8 +12,24 @@ export default function ToastMessage({
   onRemoveMessage,
   duration,
   isLeaving,
+  onAnimationEnd,
 }) {
-  const { shouldRender, animatedElementRef } = useAnimetedUnmount(!isLeaving);
+  const animatedElementRef = useRef(null);
+
+  useEffect(() => {
+    function handleAnimationEnd() {
+      onAnimationEnd(id);
+    }
+
+    const overlayRefElement = animatedElementRef.current;
+    if (isLeaving) {
+      overlayRefElement.addEventListener('animationend', handleAnimationEnd);
+    }
+
+    return () => {
+      overlayRefElement.removeEventListener('animationend', handleAnimationEnd);
+    };
+  }, [id, isLeaving, onAnimationEnd]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -31,9 +46,6 @@ export default function ToastMessage({
     onRemoveMessage(id);
   }
 
-  if (!shouldRender) {
-    return null;
-  }
   return (
     <Container
       type={type}
