@@ -1,35 +1,34 @@
-import { useEffect } from 'react';
-import { useRef } from 'react';
+import { useEffect, memo } from 'react';
 import { Container } from './styles';
 
 import xCircleIcon from '../../../assets/images/icons/x-circle.svg';
 import checkCicleIcon from '../../../assets/images/icons/check-circle.svg';
 
-export default function ToastMessage({
+function ToastMessage({
   id,
   text,
   type = 'default',
   onRemoveMessage,
   duration,
   isLeaving,
-  onAnimationEnd,
+  animatedRef,
 }) {
-  const animatedElementRef = useRef(null);
+//   const animatedElementRef = useRef(null);
 
-  useEffect(() => {
-    function handleAnimationEnd() {
-      onAnimationEnd(id);
-    }
+  //   useEffect(() => {
+  //     function handleAnimationEnd() {
+  //       onAnimationEnd(id);
+  //     }
 
-    const overlayRefElement = animatedElementRef.current;
-    if (isLeaving) {
-      overlayRefElement.addEventListener('animationend', handleAnimationEnd);
-    }
+  //     const overlayRefElement = animatedElementRef.current;
+  //     if (isLeaving) {
+  //       overlayRefElement.addEventListener('animationend', handleAnimationEnd);
+  //     }
 
-    return () => {
-      overlayRefElement.removeEventListener('animationend', handleAnimationEnd);
-    };
-  }, [id, isLeaving, onAnimationEnd]);
+  //     return () => {
+  //       overlayRefElement.removeEventListener('animationend', handleAnimationEnd);
+  //     };
+  //   }, [id, isLeaving, onAnimationEnd]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -53,7 +52,7 @@ export default function ToastMessage({
       tabIndex={0}
       rule="button"
       isLeaving={isLeaving}
-      ref={animatedElementRef}
+      ref={animatedRef}
     >
       {type === 'danger' && <img src={xCircleIcon} alt="X" />}
       {type === 'sucess' && <img src={checkCicleIcon} alt="Check" />}
@@ -61,3 +60,5 @@ export default function ToastMessage({
     </Container>
   );
 }
+
+export default memo(ToastMessage);
