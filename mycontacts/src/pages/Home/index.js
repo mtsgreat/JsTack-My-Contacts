@@ -16,12 +16,13 @@ import ContactList from './components/ContactsList';
 
 export default function Home() {
   const {
+    // isPending,
     isLoading,
     hasError,
     isDeleteModalVisible,
     isLoadingDelete,
     filteredContacts,
-    handleToggleOrderBy,
+    handleToggleorderby,
     handleChangeSearchTerm,
     handleTryAgain,
     handleDeleteContact,
@@ -30,7 +31,7 @@ export default function Home() {
     handleCloseDeleteModal,
     contacts,
     searchTerm,
-    orderBy,
+    orderby,
   } = useHome();
 
   const hasContacts = contacts.length > 0;
@@ -63,10 +64,11 @@ export default function Home() {
 
       {hasContacts && (
         <>
+
           <ContactList
             filteredContacts={filteredContacts}
-            orderBy={orderBy}
-            onToggleOrderBy={handleToggleOrderBy}
+            orderby={orderby}
+            onToggleorderby={handleToggleorderby}
             onDeleteContact={handleDeleteContact}
           />
 

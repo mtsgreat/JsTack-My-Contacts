@@ -6,8 +6,8 @@ class ContactsServices {
     this.httpClient = new HttpClient('http://localhost:3001');
   }
 
-  async listContacts(orderBy = 'ASC ') {
-    const contacts = await this.httpClient.get(`/contacts?orderBy=${orderBy}`);
+  async listContacts(orderby = 'ASC ') {
+    const contacts = await this.httpClient.get(`/contacts?orderby=${orderby}`);
 
     return contacts.map((contact) => ContactMapper.toDomain(contact));
   }

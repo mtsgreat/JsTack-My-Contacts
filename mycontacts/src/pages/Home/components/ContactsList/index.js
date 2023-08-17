@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { memo } from 'react';
 
 import arrow from '../../../../assets/images/icons/arrow.svg';
 import edit from '../../../../assets/images/icons/edit.svg';
@@ -6,17 +7,17 @@ import deleteted from '../../../../assets/images/icons/delete.svg';
 
 import { Card, ListHeader } from './styles';
 
-export default function ContactList({
+function ContactList({
   filteredContacts,
-  orderBy,
-  onToggleOrderBy,
+  orderby,
+  onToggleorderby,
   onDeleteContact,
 }) {
   return (
     <>
       {filteredContacts.length > 0 && (
-      <ListHeader orderBy={orderBy}>
-        <button type="button" onClick={onToggleOrderBy}>
+      <ListHeader orderby={orderby}>
+        <button type="button" onClick={onToggleorderby}>
           <span>Nome</span>
           <img src={arrow} alt="Arrow" />
         </button>
@@ -50,3 +51,5 @@ export default function ContactList({
     </>
   );
 }
+
+export default memo(ContactList);

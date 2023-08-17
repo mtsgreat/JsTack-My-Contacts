@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.header`
    display: flex;
-   justify-content:  ${({ justifyContent }) => justifyContent};
+   justify-content:  ${({ justifycontent }) => justifycontent};
    align-items: center;
    margin-top: 32px;
    border-bottom: 2px solid ${({ theme }) => theme.colors.gray[100]};

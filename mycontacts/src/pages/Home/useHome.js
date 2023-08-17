@@ -1,32 +1,36 @@
 import {
-  useEffect, useState, useMemo, useCallback,
+  // eslint-disable-next-line no-unused-vars
+  useEffect, useState, useMemo, useCallback, useTransition,
 } from 'react';
 import ContactsServices from '../../services/ContactsServices';
 import toast from '../../services/utils/toast';
 
 export default function useHome() {
   const [contacts, setContacts] = useState([]);
-  const [orderBy, setOrderBy] = useState('ASC');
+  const [orderby, setorderby] = useState('ASC');
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [contactBeingDeleted, setContactBeingDeleted] = useState(null);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+  const [filteredContacts, setFilteredContacts] = useState([]);
+  const [isPending, startTransition] = useTransition();
 
-  const filteredContacts = useMemo(() => contacts.filter((contact) => (
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )), [contacts, searchTerm]);
+  // const filteredContacts = useMemo(() => contacts.filter((contact) => (
+  //   contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // )), [contacts, searchTerm]);
 
   const loadContacts = useCallback(async () => {
     try {
       setIsLoading(true);
 
-      const contactsList = await ContactsServices.listContacts(orderBy);
-      //   const contactsList = []; await ContactsServices.listContacts(orderBy);
+      const contactsList = await ContactsServices.listContacts(orderby);
+      //   const contactsList = []; await ContactsServices.listContacts(orderby);
 
       setHasError(false);
       setContacts(contactsList);
+      setFilteredContacts(contactsList);
 
       setIsLoading(false);
     } catch {
@@ -35,7 +39,7 @@ export default function useHome() {
     } finally {
       setIsLoading(false);
     }
-  }, [orderBy]);
+  }, [orderby]);
 
   useEffect(() => {
     loadContacts();
@@ -43,17 +47,17 @@ export default function useHome() {
     // return () => console.log('clearup');
   }, [loadContacts]);
 
-  function handleToggleOrderBy() {
-    setOrderBy(
+  const handleToggleorderby = useCallback(() => {
+    setorderby(
       (prevState) => (prevState === 'ASC' ? 'DESC' : 'ASC'),
     );
-  }
+  }, []);
 
-  //   function handleToggleOrderBy() {
-  //     const newOrder = orderBy === 'ASC' ? 'DESC' : 'ASC';
-  //     setOrderBy(newOrder);
+  //   function handleToggleorderby() {
+  //     const newOrder = orderby === 'ASC' ? 'DESC' : 'ASC';
+  //     setorderby(newOrder);
 
-  //     fetch(`http://localhost:3001/contacts?orderBy=${newOrder}`)
+  //     fetch(`http://localhost:3001/contacts?orderby=${newOrder}`)
   //       .then(async (response) => {
   //         const json = await response.json();
   //         setContacts(json);
@@ -64,17 +68,25 @@ export default function useHome() {
   //   }
 
   function handleChangeSearchTerm(event) {
-    setSearchTerm(event.target.value);
+    const { value } = event.target;
+
+    setSearchTerm(value);
+
+    startTransition(() => {
+      setFilteredContacts(contacts.filter((contact) => (
+        contact.name.toLowerCase().includes(value.toLowerCase())
+      )));
+    });
   }
 
   function handleTryAgain() {
     loadContacts();
   }
 
-  function handleDeleteContact(contato) {
+  const handleDeleteContact = useCallback((contato) => {
     setContactBeingDeleted(contato);
     setIsDeleteModalVisible(true);
-  }
+  }, []);
 
   function handleCloseDeleteModal() {
     setIsDeleteModalVisible(false);
@@ -108,12 +120,13 @@ export default function useHome() {
   }
 
   return {
+    isPending,
     isLoading,
     hasError,
     isDeleteModalVisible,
     isLoadingDelete,
     filteredContacts,
-    handleToggleOrderBy,
+    handleToggleorderby,
     handleChangeSearchTerm,
     handleTryAgain,
     handleDeleteContact,
@@ -122,6 +135,6 @@ export default function useHome() {
     handleCloseDeleteModal,
     contacts,
     searchTerm,
-    orderBy,
+    orderby,
   };
 }

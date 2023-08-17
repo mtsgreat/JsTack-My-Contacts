@@ -19,7 +19,7 @@ export const ListHeader = styled.header`
     }
 
     img {
-        transform: ${({ orderBy }) => (orderBy === 'ASC' ? 'rotate(180deg)' : 'rotate(0deg)')};
+        transform: ${({ orderby }) => (orderby === 'ASC' ? 'rotate(180deg)' : 'rotate(0deg)')};
         transition: transform 0.2s ease-in;
     }
 }

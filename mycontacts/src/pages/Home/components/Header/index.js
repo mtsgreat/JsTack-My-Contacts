@@ -12,7 +12,7 @@ export default function Header({ hasError, contacts, filteredContacts }) {
     );
 
   return (
-    <Container justifyContent={aligment}>
+    <Container justifycontent={aligment}>
       {(!hasError && contacts.length > 0) && (
       <strong>
         {filteredContacts.length}
