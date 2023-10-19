@@ -1,4 +1,4 @@
-import { Switch, Route } from 'react-router-dom';
+import { Route, Routes as Router } from 'react-router-dom';
 
 import Home from './pages/Home';
 import NewContact from './pages/NewContact';
@@ -7,11 +7,11 @@ import NewCategory from './pages/NewCategory';
 
 export default function Routes() {
   return (
-    <Switch>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/new" component={NewContact} />
-      <Route exact path="/new-category" component={NewCategory} />
-      <Route exact path="/edit/:id" component={EditContact} />
-    </Switch>
+    <Router>
+      <Route path="/" element={<Home />} />
+      <Route path="/new" element={<NewContact />} />
+      <Route path="/new-category" element={<NewCategory />} />
+      <Route path="/edit/:id" element={<EditContact />} />
+    </Router>
   );
 }
